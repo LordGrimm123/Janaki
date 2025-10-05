@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Carpe Diem - Stock Simulator</title>
+<style>
+:root{
+--bg:#0b132b;
+--panel:#14213d;
+--card:#1b294a;
+--accent:#4cafef;
+--accent-2:#357abd;
+--text:#ffffff;
+--muted:#eef4ff;
+--muted-2:#d7e3ff;
+--good:#3ddc97;
+--bad:#ff6b6b;
+--border:#ffffff33;
+}
+*{box-sizing:border-box}
+html, body{height:100%}
+body{
+margin:0; font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, Helvetica, sans-serif;
+ background:var(--bg); color:var(--text);
+}
+header{
+background:linear-gradient(90deg, #0e1a34,#18335f);
+padding: 14px 16px; text-align:center; font-weight:800; letter-spacing:.3px;
+box-shadow:0 2px 14px #0008;
+}
+.wrap{max-width: 1160px; margin:24px auto; padding:0 16px}
+.hidden{display:none !important}
+.panel{
+background:var(--panel); border-radius:8px; padding:16px;
+border:1px solid var(--border);
+box-shadow:0 4px 24px #00000044;
+}
+.cols{display:flex; flex-wrap:wrap; gap:16px; align-items:flex-start}
+.cols > *{flex:1 1 320px}
+.field{display:grid; gap:4px; margin-bottom:12px}
+.field > label{font-size:13px; font-weight:600; color:var(--muted)}
+.field > input, .field > select{
+padding:8px 10px; border-radius:4px; background:var(--bg); color:var(--text);
+border:1px solid var(--border);
+}
+button{
+padding:10px 14px; border-radius:4px; border:none; cursor:pointer;
+background:var(--accent); color:var(--text); font-weight:600;
+}
+button:hover{background:var(--accent-2)}
+button.secondary{background:var(--card); color:var(--muted)}
+button.secondary:hover{background:#2a4175}
+button:disabled{opacity:0.6; cursor:not-allowed}
+.flex{display:flex; align-items:center; gap:8px}
+.muted{color:var(--muted); font-size:13px;}
+.good{color:var(--good)}
+.bad{color:var(--bad)}
+.mono{font-family: 'Courier New', Courier, monospace}
+table{width:100%; border-collapse:collapse}
+th, td{padding:8px; text-align:left; border-bottom:1px solid var(--border)}
+th{font-size:12px; color:var(--muted); font-weight:600; text-transform: uppercase}
+td{font-size:14px}
+.clickable-row{cursor:pointer}
+.clickable-row:hover{background:var(--card)}
+.clickable-row.selected{background:var(--accent-2)}
+.small-text{font-size:12px; opacity:0.8}
+.tabs{display:flex; border-bottom:2px solid var(--border); margin-bottom:16px}
+.tab{padding:8px 16px; cursor:pointer; font-weight:600; color:var(--muted)}
+.tab:hover{background:var(--card)}
+.tab.active{color:var(--accent); border-bottom:2px solid var(--accent); margin-bottom:-2px}
+#leaderboard th:nth-child(2), #leaderboard td:nth-child(2){text-align:right}
+#leaderboard th:nth-child(3), #leaderboard td:nth-child(3){text-align:right}
+</style>
+</head>
+<body>
+
+<header>
+Carpe Diem - Stock Simulator
+</header>
+
+<div class="wrap">
+<div class="cols">
+
+<div style="flex-basis:450px">
+<div id="stocksPanel" class="panel">
+<h2 style="margin-top:0">Stocks</h2>
+<table id="stocksTable">
+<thead><tr><th>Symbol</th><th>Name</th><th style="text-align:right">Price</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+
+<div id="leaderboardPanel" class="panel" style="margin-top:16px">
+<h2 style="margin-top:0">Leaderboard</h2>
+<table id="leaderboard">
+<thead><tr><th>Trader</th><th style="text-align:right">Net Worth</th><th style="text-align:right">Portfolio Value</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
+
+<div style="flex-basis:650px">
+<div id="traderPanel" class="panel">
+<div id="loginSection">
+<h2 style="margin-top:0">Login</h2>
+<div class="field">
+<label for="email">Email</label>
+<input type="email" id="email" />
+</div>
+<div class="field">
+<label for="password">Password</label>
+<input type="password" id="password" />
+</div>
+<div class="flex">
+<button id="loginBtn">Login</button>
+<button id="signupBtn" class="secondary">Sign up</button>
+<div id="authMsg" style="margin-left:8px"></div>
+</div>
+</div>
+
+<div id="traderSection" class="hidden">
+<div style="display:flex; justify-content:space-between; align-items:start">
+<div>
+<h2 id="traderName" style="margin-top:0; margin-bottom:4px"></h2>
+<div class="muted">Net worth: <span id="netWorth" class="mono"></span></div>
+</div>
+<button id="logoutBtn" class="secondary">Logout</button>
+</div>
+<hr style="border-color:var(--border); margin:16px 0">
+
+<div class="cols" style="gap:24px">
+<div style="flex-basis:280px">
+<h3 style="margin-top:0">Trade</h3>
+<div class="field">
+<label>Selected stock</label>
+<div id="selectedStock" style="font-weight:600">None</div>
+</div>
+<div class="field">
+<label for="qty">Quantity</label>
+<input type="number" id="qty" value="1" min="1" />
+</div>
+<div class="flex">
+<button id="buyBtn">Buy</button>
+<button id="sellBtn">Sell</button>
+</div>
+<div id="tradeMsg" style="margin-top:12px; min-height:18px"></div>
+</div>
+<div style="flex-basis:280px">
+<h3 style="margin-top:0">Admin</h3>
+<div id="adminControls" class="hidden">
+<div class="field">
+<label for="stockId">Stock ID (e.g., 'GOOG')</label>
+<input type="text" id="stockId" />
+</div>
+<div class="field">
+<label for="stockName">Stock Name</label>
+<input type="text" id="stockName" />
+</div>
+<div class="field">
+<label for="stockBaseline">Baseline Price</label>
+<input type="number" id="stockBaseline" value="500" />
+</div>
+<div class="flex">
+<button id="addStockBtn">Add/Update Stock</button>
+<button id="delStockBtn" class="secondary">Delete</button>
+</div>
+<div class="flex" style="margin-top:8px">
+<input type="checkbox" id="freezeCheck" />
+<label for="freezeCheck">Freeze price</label>
+</div>
+<div id="adminMsg" style="margin-top:12px"></div>
+</div>
+</div>
+</div>
+<hr style="border-color:var(--border); margin:24px 0">
+
+<div class="tabs">
+<div class="tab active" data-tab="portfolio">Portfolio</div>
+<div class="tab" data-tab="history">History</div>
+</div>
+<div id="tabContent">
+<div id="portfolioTab">
+<table id="portfolioTable">
+<thead><tr><th>Symbol</th><th>Quantity</th><th>Avg Cost</th><th>Current Value</th><th>Auto-Sell At</th><th></th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+<div id="historyTab" class="hidden">
+<table id="historyTable">
+<thead><tr><th>Time</th><th>Type</th><th>Stock</th><th>Qty</th><th>Price</th><th>Value</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import {
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+signOut,
+onAuthStateChanged,
+setPersistence,
+browserSessionPersistence,
+} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import {
+getFirestore,
+doc,
+getDoc,
+setDoc,
+onSnapshot,
+collection,
+query,
+deleteDoc,
+} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+// --- Your web app's Firebase configuration ---
+const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyC72GZrrjG4UIR3qzDs-I2QWIgSFd4Yehs",
+    authDomain: "carpediem-f6948.firebaseapp.com",
+    projectId: "carpediem-f6948",
+    storageBucket: "carpediem-f6948.appspot.com",
+    messagingSenderId: "705608113463",
+    appId: "1:705608113463:web:eb70088734b33486c70eb2"
+};
+
+// --- App State ---
+const APP_ID = "main-sim"; // Unique ID for this simulation instance
+let me = null; // Current user { uid, email, isAdmin, ...traderData }
+let stocks = {}; // { GOOG: { name, price, baseline, frozen }, ... }
+let traders = {}; // { uid1: { name, cash, portfolio, ... }, ... }
+let selectedId = null; // Currently selected stock ID
+let unsubStocks = ()=>{};
+let unsubTraders = ()=>{};
+let unsubMe = ()=>{};
+let lastAutosTick = 0;
+
+const clamp = (val, min=1, max=1e9)=> Math.max(min, Math.min(val, max));
+
+// --- Clock & Simulator ---
+const clock = {
+    isPaused: false,
+    ticks: 0,
+    lastTick: Date.now(),
+    onTick: ()=>{
+        if (clock.isPaused) return;
+        const now = Date.now();
+        const elapsed = now - clock.lastTick;
+        if (elapsed < 1000) return; // Tick every second
+        clock.lastTick = now;
+        clock.ticks++;
+
+        // Determine if we should process auto-sells this tick BEFORE the loop
+        const isNewAutosTick = lastAutosTick !== clock.ticks;
+        if (isNewAutosTick) {
+            lastAutosTick = clock.ticks;
+        }
+
+        // Update trader portfolios based on stock prices
+        for(const t of Object.values(traders)){
+            const portfolio = t.portfolio || {};
+            const history = t.history || [];
+            let cash = t.cash || 0;
+            let pVal = 0;
+
+            // Check for auto-sells for EVERY trader if it's a new tick
+            if (isNewAutosTick){
+                const portfolioToCheck = { ...portfolio }; // Use a copy for safe iteration
+                for(const stockId in portfolioToCheck){
+                    const pos = portfolioToCheck[stockId];
+                    if (!pos.autoSell) continue;
+                    const st = stocks[stockId];
+                    if (!st) continue;
+                    if (st.price >= pos.autoSell){
+                        // Transact
+                        const value = pos.quantity * st.price;
+                        cash += value;
+                        history.push({ ts:now, kind:"sell", stockId, stockName:st.name||stockId, qty:pos.quantity, price:st.price, value, auto:true });
+                        delete portfolio[stockId]; // Modify the actual portfolio
+                    }
+                }
+            }
+
+            // Calculate portfolio value with the (potentially) updated portfolio
+            for(const stockId in portfolio){
+                const pos = portfolio[stockId];
+                const st = stocks[stockId];
+                if (!st) continue;
+                pVal += (pos.quantity||0) * st.price;
+            }
+            t.cash = cash; // Update cash with earnings from any auto-sells
+            t.history = history;
+            t.portfolioValue = pVal;
+            t.netWorth = (t.cash||0) + pVal;
+        }
+
+        // Refresh UI
+        if (me?.isAdmin) renderAdmin();
+        renderStocks();
+        renderPortfolio();
+        renderHistory();
+        renderLeaderboard();
+    },
+};
+
+// Price fluctuation logic
+function jumpOnce(stock){
+    const base = Number.isFinite(stock.baseline)? stock.baseline: (stock.defaultBaseline||500);
+    if (stock.frozen) {
+        stock.price = base;
+        return;
+    }
+    const mag = 0.01 + Math.random()*0.02; // 1-3%
+    const sign = Math.random() < 0.5?-1: 1;
+    const next = base * (1 + sign*mag);
+    stock.price = clamp(Math.round(next * 100) / 100, 1);
+}
+
+// Admin-only: update prices on a timer
+function startPriceJumps(){
+    for(const stock of Object.values(stocks)) jumpOnce(stock);
+    if (me?.isAdmin) syncStocksWithDb(); // Admin is the source of truth
+    setTimeout(startPriceJumps, 1500 + Math.random()*1000);
+}
+
+// --- Firebase Initialization ---
+const app = initializeApp(FIREBASE_CONFIG);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Paths
+const basePath = `artifacts/${APP_ID}/public/data`;
+const stocksPath = `${basePath}/stocks`;
+const tradersPath = `${basePath}/traders`;
+const rolesPath = `${basePath}/roles`;
+
+// --- UI Rendering ---
+function renderAll(){
+    if (me) {
+        traderSection.classList.remove("hidden");
+        loginSection.classList.add("hidden");
+        traderName.textContent = me.name || me.email;
+        netWorth.textContent = `$${(me.netWorth||0).toLocaleString()}`;
+        if (me.isAdmin) adminControls.classList.remove("hidden");
+        else adminControls.classList.add("hidden");
+    } else {
+        traderSection.classList.add("hidden");
+        loginSection.classList.remove("hidden");
+    }
+    renderStocks();
+    renderLeaderboard();
+    renderPortfolio();
+    renderHistory();
+    renderAdmin();
+}
+
+function renderStocks(){
+    const tbody = stocksTable.querySelector("tbody");
+    tbody.innerHTML = "";
+    const sorted = Object.entries(stocks).sort((a,b)=>a[0].localeCompare(b[0]));
+    for(const [id, stock] of sorted){
+        const row = document.createElement("tr");
+        row.className = "clickable-row";
+        if (id === selectedId) row.classList.add("selected");
+        row.dataset.id = id;
+        row.innerHTML = `<td>${id}</td><td>${stock.name}</td><td style="text-align:right" class="mono good">$${stock.price?.toFixed(2)}</td>`;
+        tbody.appendChild(row);
+    }
+}
+
+function renderLeaderboard(){
+    const tbody = leaderboard.querySelector("tbody");
+    tbody.innerHTML = "";
+    const sorted = Object.values(traders).sort((a,b)=>(b.netWorth||0) - (a.netWorth||0));
+    for(const t of sorted){
+        const row = document.createElement("tr");
+        const isMe = t.uid === me?.uid;
+        row.style.fontWeight = isMe ? "800" : "normal";
+        row.style.color = isMe ? "var(--accent)" : "inherit";
+        row.innerHTML = `<td>${t.name||t.email}</td><td class="mono">$${(t.netWorth||0).toLocaleString()}</td><td class="mono">$${(t.portfolioValue||0).toLocaleString()}</td>`;
+        tbody.appendChild(row);
+    }
+}
+
+function renderPortfolio(){
+    if (!me) return;
+    const tbody = portfolioTable.querySelector("tbody");
+    tbody.innerHTML = "";
+    const portfolio = me.portfolio || {};
+    const sorted = Object.entries(portfolio).sort((a,b)=>a[0].localeCompare(b[0]));
+    if (sorted.length === 0){
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--muted)">No stocks in portfolio.</td></tr>`;
+        return;
+    }
+    for(const [stockId, pos] of sorted){
+        const st = stocks[stockId];
+        if (!st) continue;
+        const value = (pos.quantity||0) * st.price;
+        const row = document.createElement("tr");
+        row.innerHTML = `
+        <td><b>${st.name||stockId}</b><br><span class="muted mono">${stockId}</span></td>
+        <td>${pos.quantity}</td>
+        <td>$${pos.avgCost?.toFixed(2)}</td>
+        <td>$${value.toLocaleString()}</td>
+        <td><input type="number" class="auto-sell-input" data-id="${stockId}" value="${pos.autoSell||''}" placeholder="e.g., 600"></td>
+        <td><button class="secondary small-text" data-id="${stockId}">Set</button></td>
+        `;
+        tbody.appendChild(row);
+    }
+}
+
+function renderHistory(){
+    if (!me) return;
+    const tbody = historyTable.querySelector("tbody");
+    tbody.innerHTML = "";
+    const history = me.history || [];
+    const sorted = [...history].sort((a,b)=>b.ts - a.ts);
+    if (sorted.length === 0){
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--muted)">No transaction history.</td></tr>`;
+        return;
+    }
+    for(const item of sorted){
+        const row = document.createElement("tr");
+        const d = new Date(item.ts);
+        const time = `${d.getHours()}:${d.getMinutes().toString().padStart(2,'0')}`;
+        row.innerHTML = `
+        <td>${time}</td>
+        <td class="${item.kind==='buy'?'bad':'good'}">${item.kind.toUpperCase()}${item.auto?' (auto)':''}</td>
+        <td>${item.stockName||item.stockId}</td>
+        <td>${item.qty}</td>
+        <td>$${item.price?.toFixed(2)}</td>
+        <td>$${item.value?.toLocaleString()}</td>
+        `;
+        tbody.appendChild(row);
+    }
+}
+
+function renderAdmin(){
+    if (!me?.isAdmin || !selectedId) return;
+    const stock = stocks[selectedId];
+    if (!stock) return;
+    stockId.value = selectedId;
+    stockName.value = stock.name;
+    stockBaseline.value = stock.baseline;
+    freezeCheck.checked = stock.frozen || false;
+}
+
+// --- Data Fetching & Syncing ---
+function listenToStocks(){
+    unsubStocks();
+    unsubStocks = onSnapshot(query(collection(db, stocksPath)), (snapshot)=>{
+        const newStocks = {};
+        snapshot.forEach(d => newStocks[d.id] = d.data());
+        stocks = newStocks;
+        renderStocks();
+    });
+}
+
+function listenToTraders(){
+    unsubTraders();
+    unsubTraders = onSnapshot(query(collection(db, tradersPath)), (snapshot)=>{
+        const newTraders = {};
+        snapshot.forEach(d => newTraders[d.id] = {...d.data(), uid:d.id});
+        traders = newTraders;
+        if (me) me = {...me, ...(traders[me.uid]||{})};
+        renderLeaderboard();
+        renderAll();
+    });
+}
+
+function listenToMe(uid){
+    unsubMe();
+    unsubMe = onSnapshot(doc(db, tradersPath, uid), (docSnap)=>{
+        if (docSnap.exists()){
+            me = { ...me, ...docSnap.data() };
+            renderAll();
+        }
+    });
+}
+
+async function syncStocksWithDb(){
+    if (!me?.isAdmin) return;
+    for(const [id, stock] of Object.entries(stocks)){
+        await setDoc(doc(db, stocksPath, id), stock, {merge:true});
+    }
+}
+
+// --- User Actions ---
+async function handleSignup(){
+    const e = email.value.trim();
+    const p = password.value;
+    if (!e || !p) { authMsg.textContent = "Email and password required."; return; }
+    authMsg.textContent = "";
+    try {
+        const userCred = await createUserWithEmailAndPassword(auth, e, p);
+        const user = userCred.user;
+        // Create trader profile
+        const newTrader = {
+            email: user.email,
+            name: user.email.split('@')[0],
+            cash: 100000,
+            portfolio: {},
+            history: [],
+            netWorth: 100000,
+            portfolioValue: 0,
+        };
+        await setDoc(doc(db, tradersPath, user.uid), newTrader);
+        // Set basic role
+        await setDoc(doc(db, rolesPath, user.uid), { role: "trader" });
+        authMsg.textContent = "Signed up!";
+    } catch(err){
+        authMsg.textContent = `Signup failed: ${err.message}`;
+    }
+}
+
+async function handleLogin(){
+    const e = email.value.trim();
+    const p = password.value;
+    if (!e || !p) { authMsg.textContent = "Email and password required."; return; }
+    authMsg.textContent = "";
+    try {
+        await signInWithEmailAndPassword(auth, e, p);
+    } catch(err){
+        authMsg.textContent = `Login failed: ${err.message}`;
+    }
+}
+
+function handleLogout(){
+    signOut(auth);
+}
+
+async function handleBuy(){
+    tradeMsg.textContent = "";
+    if (!me){ tradeMsg.textContent="Please log in."; return; }
+    if (!selectedId){ tradeMsg.textContent="Select a stock first."; return; }
+    const q = Math.max(1, parseInt(qty.value||"1",10));
+    const st = stocks[selectedId];
+    if (st?.frozen){ tradeMsg.textContent = "This stock is frozen."; return; }
+    const price = st?.price;
+    if (!price){ tradeMsg.textContent = "Invalid stock price."; return; }
+    const cost = q * price;
+    if ((me.cash||0) < cost) { tradeMsg.textContent = "Not enough cash."; return; }
+
+    const tx = { ...me };
+    const portfolio = tx.portfolio || {};
+    const history = tx.history || [];
+    const pos = portfolio[selectedId] || { quantity:0, avgCost:0 };
+    const newTotalCost = pos.quantity * pos.avgCost + cost;
+    const newQty = (pos.quantity||0) + q;
+    const newAvgCost = newTotalCost / newQty;
+
+    const newPortfolio = { ...portfolio, [selectedId]: { quantity:newQty, avgCost:newAvgCost } };
+    history.push({ ts: Date.now(), kind:"buy", stockId:selectedId, stockName:st?.name||selectedId, qty:q, price:+price, value:+(q*price).toFixed(2) });
+    if (history.length > 500) history.splice(0, history.length-500);
+
+    tx.cash = (tx.cash||0) - cost;
+    tx.portfolio = newPortfolio;
+    tx.history = history;
+    await setDoc(doc(db, tradersPath, me.uid), tx, {merge:true});
+    tradeMsg.textContent = `Bought ${q} of ${selectedId}`;
+}
+
+async function handleSell(){
+    tradeMsg.textContent = "";
+    if (!me){ tradeMsg.textContent="Please log in."; return; }
+    if (!selectedId){ tradeMsg.textContent="Select a stock first."; return; }
+    const q = Math.max(1, parseInt(qty.value||"1",10));
+    const st = stocks[selectedId];
+    if (st?.frozen){ tradeMsg.textContent = "This stock is frozen."; return; }
+    const price = st?.price;
+    if (!price){ tradeMsg.textContent = "Invalid stock price."; return; }
+    const portfolio = me.portfolio || {};
+    const pos = portfolio[selectedId];
+    if (!pos || pos.quantity < q) { tradeMsg.textContent = "Not enough shares to sell."; return; }
+
+    const tx = { ...me };
+    const value = q * price;
+    const history = tx.history || [];
+    const newQty = pos.quantity - q;
+    const newPortfolio = { ...tx.portfolio };
+    if (newQty <= 0) delete newPortfolio[selectedId];
+    else newPortfolio[selectedId] = { ...pos, quantity: newQty };
+
+    history.push({ ts: Date.now(), kind:"sell", stockId:selectedId, stockName:st?.name||selectedId, qty:q, price:+price, value:+value.toFixed(2) });
+    if (history.length > 500) history.splice(0, history.length-500);
+
+    tx.cash = (tx.cash||0) + value;
+    tx.portfolio = newPortfolio;
+    tx.history = history;
+    await setDoc(doc(db, tradersPath, me.uid), tx, {merge:true});
+    tradeMsg.textContent = `Sold ${q} of ${selectedId}`;
+}
+
+async function handleAutoSell(stockId, threshold){
+    if (!me) return;
+    const portfolio = me.portfolio || {};
+    const pos = portfolio[stockId];
+    if (!pos) return;
+    const newPortfolio = {...portfolio};
+    if (threshold > 0) newPortfolio[stockId] = { ...pos, autoSell: threshold };
+    else delete newPortfolio[stockId].autoSell;
+    await setDoc(doc(db, tradersPath, me.uid), { portfolio: newPortfolio }, { merge: true });
+}
+
+// --- Admin Actions ---
+async function handleAddStock(){
+    adminMsg.textContent = "";
+    const id = stockId.value.trim().toUpperCase();
+    const name = stockName.value.trim();
+    const baseline = parseFloat(stockBaseline.value);
+    const isFrozen = freezeCheck.checked;
+    if (!id || !name || !baseline) { adminMsg.textContent = "All fields required."; return; }
+    const newStock = {
+        name,
+        baseline,
+        price: baseline,
+        frozen: isFrozen,
+    };
+    await setDoc(doc(db, stocksPath, id), newStock, {merge:true});
+    adminMsg.textContent = `Stock ${id} updated.`;
+}
+
+async function handleDeleteStock(){
+    adminMsg.textContent = "";
+    const id = stockId.value.trim().toUpperCase();
+    if (!id) { adminMsg.textContent = "Stock ID required."; return; }
+    if (!confirm(`Are you sure you want to delete ${id}?`)) return;
+    await deleteDoc(doc(db, stocksPath, id));
+    adminMsg.textContent = `Stock ${id} deleted.`;
+    stockId.value = ""; stockName.value=""; stockBaseline.value="500"; freezeCheck.checked=false;
+    selectedId = null;
+    renderAll();
+}
+
+
+// --- Event Listeners ---
+signupBtn.addEventListener("click", handleSignup);
+loginBtn.addEventListener("click", handleLogin);
+logoutBtn.addEventListener("click", handleLogout);
+buyBtn.addEventListener("click", handleBuy);
+sellBtn.addEventListener("click", handleSell);
+addStockBtn.addEventListener("click", handleAddStock);
+delStockBtn.addEventListener("click", handleDeleteStock);
+
+stocksTable.addEventListener("click", (e)=>{
+    const row = e.target.closest(".clickable-row");
+    if (row){
+        selectedId = row.dataset.id;
+        document.getElementById("selectedStock").textContent = `${stocks[selectedId].name} (${selectedId})`;
+        renderStocks();
+        renderAdmin();
+    }
+});
+
+document.querySelector(".tabs").addEventListener("click", (e)=>{
+    if (!e.target.classList.contains("tab")) return;
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    e.target.classList.add("active");
+    const tabName = e.target.dataset.tab;
+    document.getElementById("portfolioTab").classList.toggle("hidden", tabName !== "portfolio");
+    document.getElementById("historyTab").classList.toggle("hidden", tabName !== "history");
+});
+
+portfolioTable.addEventListener("click", (e)=>{
+    if (e.target.tagName !== "BUTTON") return;
+    const stockId = e.target.dataset.id;
+    const input = e.target.closest("tr").querySelector(".auto-sell-input");
+    const threshold = parseFloat(input.value);
+    handleAutoSell(stockId, threshold);
+});
+
+// --- Initialization ---
+onAuthStateChanged(auth, async (user)=>{
+    if (user) {
+        const roleDoc = await getDoc(doc(db, rolesPath, user.uid));
+        const traderDoc = await getDoc(doc(db, tradersPath, user.uid));
+        me = {
+            uid: user.uid,
+            email: user.email,
+            isAdmin: roleDoc.exists() && roleDoc.data().role === 'admin',
+            ...(traderDoc.exists() ? traderDoc.data() : {})
+        };
+        listenToMe(user.uid);
+        if (me.isAdmin) startPriceJumps(); // Only admin drives price changes
+    } else {
+        me = null;
+        unsubMe();
+    }
+    renderAll();
+});
+
+/* Session persistence (non-blocking) */
+(async $=>{
+try { await setPersistence(auth, browserSessionPersistence); }
+catch(e){ console.warn("Auth persistence not set:", e?.message||e); }
+})();
+
+listenToStocks();
+listenToTraders();
+setInterval(clock.onTick, 1000); // Main app loop
+</script>
+
+</body>
+</html>
