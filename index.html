@@ -445,7 +445,9 @@
       adminPortfolioView.classList.toggle("hidden", !isAdmin);
       adminControls.classList.toggle("hidden", !isAdmin);
       adminOnlyHint.classList.toggle("hidden", isAdmin);
-      traderSide.classList.toggle("hidden", isAdmin); // This makes it visible for traders by default, handled later in attachTraderDoc for consistency
+      // Trader side panel should be visible for traders, and the "Admin Only visible for admins" hint hidden for them
+      traderSide.classList.toggle("hidden", isAdmin);
+
 
       loginSection.classList.add("hidden");
       dashboard.classList.remove("hidden");
@@ -634,16 +636,4 @@
       },0);
       const initial = +myTrader.initialCash || 0;
       const pl = (cash + invested) - initial;
-      const plPct = initial ? (pl/initial*100) : 0;
-
-      workingCapEl.textContent = fmt(cash);
-      investedCapEl.textContent = fmt(invested);
-      profitLossEl.style.color = pl>=0 ? "var(--good)" : "var(--bad)";
-      profitLossEl.textContent = `${pl>=0?'+':''}${fmt(plPct)}%`;
-
-      renderTraderSidePortfolio();
-    }
-
-    async function attachTraderDoc(){
-      if (!me) return;
-      const ref = traderRef(
+      const plPct = initial ? (pl/initial*
