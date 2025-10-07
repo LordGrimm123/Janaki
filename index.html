@@ -156,10 +156,12 @@
           </div>
 
           <canvas id="chart" width="900" height="220"></canvas>
-          <div class="row" style="margin-top:10px">
-            <button id="lineGraphBtn" class="btn btn-primary">Line</button>
-            <button id="candleGraphBtn" class="btn btn-ghost">Candle</button>
+          <div id="chartTypeRow" class="row hidden" style="margin-top:10px; justify-content:flex-end">
+             <label class="muted">Chart Type:</label>
+             <button id="lineGraphBtn" class="btn btn-primary">Line</button>
+             <button id="candleGraphBtn" class="btn btn-ghost">Candle</button>
           </div>
+
 
           <div id="tradeBar" class="row" style="margin-top:10px">
             <label for="qty" class="muted">Qty</label>
@@ -214,62 +216,62 @@
             </div>
           </div>
 
-          <h3 style="margin-top:0">Admin</h3>
-          <div id="adminOnlyHint" class="muted">Only visible for admins</div>
+          <div id="adminSide">
+            <h3 style="margin-top:0">Admin</h3>
+            <div id="adminOnlyHint" class="muted">Only visible for admins</div>
+            <div id="adminControls" class="hidden">
+              <div class="row" style="align-items:baseline">
+                <label class="muted" style="margin-right:6px">Selected stock:</label>
+                <strong id="adminSelected" style="font-weight:800">None</strong>
+                <span class="muted" id="adminSelectedPrice" style="margin-left:6px"></span>
+              </div>
 
-          <div id="adminControls" class="hidden">
-            <div class="row" style="align-items:baseline">
-              <label class="muted" style="margin-right:6px">Selected stock:</label>
-              <strong id="adminSelected" style="font-weight:800">None</strong>
-              <span class="muted" id="adminSelectedPrice" style="margin-left:6px"></span>
-            </div>
+              <div class="row" style="margin-top:8px">
+                <label class="muted">Adjust selected stock</label>
+              </div>
+              <div class="row">
+                <button id="raiseBtn" class="btn btn-primary">Increase 10%</button>
+                <button id="lowerBtn" class="btn btn-ghost">Decrease 10%</button>
+                <button id="raise50Btn" class="btn btn-primary">Increase 50%</button>
+                <button id="lower50Btn" class="btn btn-ghost">Decrease 50%</button>
+              </div>
+               <div class="row" style="margin-top:10px">
+                <button id="freezeBtn" class="btn btn-ghost" style="border-color:#ff6b6b;color:#ff6b6b">Freeze Selected</button>
+                <button id="unfreezeBtn" class="btn btn-primary">Unfreeze Selected</button>
+                <span id="freezeMsg" class="muted"></span>
+              </div>
 
-            <div class="row" style="margin-top:8px">
-              <label class="muted">Adjust selected stock</label>
-            </div>
-            <div class="row">
-              <button id="raiseBtn" class="btn btn-primary">Increase 10%</button>
-              <button id="lowerBtn" class="btn btn-ghost">Decrease 10%</button>
-              <button id="raise50Btn" class="btn btn-primary">Increase 50%</button>
-              <button id="lower50Btn" class="btn btn-ghost">Decrease 50%</button>
-            </div>
+              <hr class="sep" />
+              <div class="row" style="margin-top:10px">
+                  <label class="muted">All Stocks Control</label>
+              </div>
+              <div class="row">
+                  <button id="freezeAllBtn" class="btn btn-ghost" style="border-color:#ff6b6b;color:#ff6b6b">Freeze All</button>
+                  <button id="unfreezeAllBtn" class="btn btn-primary">Unfreeze All</button>
+                  <span id="allFreezeMsg" class="muted"></span>
+              </div>
 
-            <hr class="sep" />
-            <div class="row" style="margin-top:10px">
-              <label class="muted">All Stocks Control</label>
-            </div>
-            <div class="row">
-              <button id="freezeAllBtn" class="btn btn-ghost" style="border-color:#ff6b6b;color:#ff6b6b">Freeze All</button>
-              <button id="unfreezeAllBtn" class="btn btn-primary">Unfreeze All</button>
-              <span id="allFreezeMsg" class="muted"></span>
-            </div>
+              <hr class="sep" />
+              <div class="row">
+                <label class="muted">Set starting funds for ALL traders</label>
+              </div>
+              <div class="row">
+                <input id="allFunds" class="input" type="number" min="0" placeholder="e.g. 100000" style="width:180px" />
+                <button id="applyFundsBtn" class="btn btn-primary">Apply</button>
+                <span id="fundsMsg" class="muted"></span>
+              </div>
 
-            <hr class="sep" />
-            <div class="row">
-              <label class="muted">Set starting funds for ALL traders</label>
-            </div>
-            <div class="row">
-              <input id="allFunds" class="input" type="number" min="0" placeholder="e.g. 100000" style="width:180px" />
-              <button id="applyFundsBtn" class="btn btn-primary">Apply</button>
-              <span id="fundsMsg" class="muted"></span>
-            </div>
+              <hr class="sep" />
+              <button id="resetBtn" class="btn btn-ghost" style="border-color:#ffc107;color:#ffc107;width:100%">⚠ Hard RESET (All Traders + Stocks)</button>
 
-            <hr class="sep" />
-            <button id="resetBtn" class="btn btn-ghost" style="border-color:#ffc107;color:#ffc107;width:100%">⚠ Hard RESET (All Traders + Stocks)</button>
-
-            <div class="row" style="margin-top:10px">
-              <button id="freezeBtn" class="btn btn-ghost" style="border-color:#ff6b6b;color:#ff6b6b">Freeze Selected</button>
-              <button id="unfreezeBtn" class="btn btn-primary">Unfreeze Selected</button>
-              <span id="freezeMsg" class="muted"></span>
-            </div>
-
-            <hr class="sep" />
-            <h4 style="margin:6px 0">Trader Rankings</h4>
-            <div id="rankWrap" class="card" style="padding:10px; max-height:260px; overflow:auto">
-              <table>
-                <thead><tr><th>#</th><th>Trader</th><th>Total Equity</th><th>P/L</th></tr></thead>
-                <tbody id="rankTable"></tbody>
-              </table>
+              <hr class="sep" />
+              <h4 style="margin:6px 0">Trader Rankings</h4>
+              <div id="rankWrap" class="card" style="padding:10px; max-height:260px; overflow:auto">
+                <table>
+                  <thead><tr><th>#</th><th>Trader</th><th>Total Equity</th><th>P/L</th></tr></thead>
+                  <tbody id="rankTable"></tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -308,7 +310,6 @@
     const roleHeader   = $("roleHeader");
     const logoutBtn    = $("logoutBtn");
 
-    // ✅ FIX: handle login on button click instead of form submit
     loginBtn.addEventListener("click", async (e)=>{
       e.preventDefault();
       loginError.textContent = "";
@@ -340,6 +341,7 @@
     const detailName  = $("detailName");
     const detailPrice = $("detailPrice");
     const chartEl     = $("chart");
+    const chartTypeRow= $("chartTypeRow");
     const qtyEl       = $("qty");
     const tradeMsg    = $("tradeMsg");
     const tradeBar    = $("tradeBar");
@@ -351,6 +353,7 @@
     const clearAutoBtn= $("clearAutoBtn");
     const autoMsg     = $("autoMsg");
 
+    const adminSide     = $("adminSide");
     const adminOnlyHint = $("adminOnlyHint");
     const adminControls = $("adminControls");
     const raiseBtn      = $("raiseBtn");
@@ -382,26 +385,24 @@
 
     const buyBtn  = $("buyBtn");
     const sellBtn = $("sellBtn");
+    const resetBtn = $("resetBtn");
 
     const historyTable = $("historyTable");
 
     /***** State *****/
     let me = null, myRole = null;
-    let selectedId = null; // This will now store the slug, not the Firebase document ID
-    let myTrader = null; // <--- This is the line you ADD
-    // id -> { firebaseDocId, name, baseline, price, defaultBaseline, frozen }
-    let stocks = {}; // Keyed by slug(name)
+    let selectedId = null;
+    let myTrader = null;
+    let stocks = {};
 
-    // chart state
-    let chartType = "line"; // "line" or "candle"
+    let chartType = "line";
     let series = [];
+    let candleSeries = [];
     let lastSampleTime = 0;
 
-    // price step timer
-    // DECREASED DELAY: TICK_MS from 3000 to 1000 for more responsiveness
     const TICK_MS = 1000;
-    let lastProcessedTick = -1;  // price tick
-    let lastAutosTick = -1;      // <-- separate gate for auto-sells (FIX)
+    let lastProcessedTick = -1;
+    let lastAutosTick = -1;
 
     const SEED_STOCKS = [
       "Reliance Industries","TCS","Infosys","HDFC Bank","ICICI Bank",
@@ -411,7 +412,7 @@
       "Power Grid","Adani Ports","Axis Bank","Maruti Suzuki","Grasim Industries"
     ];
 
-    /***** Pricing helpers (step every 3s) *****/
+    /***** Pricing helpers *****/
     function clamp(n){ return Math.max(1, Number.isFinite(n)? n : 0); }
     function currentPriceFor(stock){
       if (!stock) return 0;
@@ -422,7 +423,7 @@
     function jumpOnce(stock){
       const base = Number.isFinite(stock.baseline) ? stock.baseline : (stock.defaultBaseline||500);
       if (stock.frozen) { stock.price = base; return; }
-      const mag = 0.04 + Math.random()*0.01; // 1–3%
+      const mag = 0.04 + Math.random()*0.01;
       const sign = Math.random() < 0.5 ? -1 : 1;
       const next = base * (1 + sign*mag);
       stock.price = Math.round(next * 100) / 100;
@@ -433,7 +434,6 @@
       if(!user){ showLogin(); return; }
       me = user;
 
-      // role by UID first; fallback by email
       let myRoleDoc = await getDoc(doc(db,"artifacts",APP_ID,"public","data","roles", user.uid));
       if (myRoleDoc.exists()){
         myRole = myRoleDoc.data().role;
@@ -443,32 +443,29 @@
         const snap = await getDocs(qEmail);
         myRole = (!snap.empty) ? (snap.docs[0].data().role) : null;
       }
-      if(!myRole){ showLogin("Role not found. Create /roles/<UID> with {email, role}."); return; }
+      if(!myRole){ showLogin("Role not found."); return; }
 
       roleHeader.textContent = `Welcome, ${myRole}`;
 
-      // view toggles
-      traderMetrics.classList.toggle("hidden", myRole === "admin");
       const isAdmin = myRole === "admin";
+      traderMetrics.classList.toggle("hidden", isAdmin);
       chartEl.classList.toggle("hidden", isAdmin);
+      chartTypeRow.classList.toggle("hidden", isAdmin);
       tradeBar.classList.toggle("hidden", isAdmin);
       $("autoRow").classList.toggle("hidden", isAdmin);
       adminPortfolioView.classList.toggle("hidden", !isAdmin);
-      adminControls.classList.toggle("hidden", !isAdmin);
-      adminOnlyHint.classList.toggle("hidden", isAdmin);
+      adminSide.classList.toggle("hidden", !isAdmin);
       traderSide.classList.toggle("hidden", isAdmin);
 
       loginSection.classList.add("hidden");
       dashboard.classList.remove("hidden");
 
       await bootstrapStocks();
-      attachRealtime();              // baselines/frozen flags
-      attachTraderDoc();             // my trader doc
+      attachRealtime();
+      attachTraderDoc();
       if (isAdmin) { loadRankingsLoop(); fillTraderDropdown(); }
 
-      // Start step timer (shared for autos + price jumps)
       startTickTimer();
-      // Start UI loop (updates tiles, chart sampling, metrics)
       startAnimationLoop();
     });
 
@@ -478,14 +475,6 @@
       if (msg) loginError.textContent = msg;
     }
 
-    // Stable login - NOTE: the form submit handler was intentionally replaced by button handler above
-    // The loginBtn click handler is used instead.
-
-    logoutBtn.addEventListener("click", async ()=>{
-      try{ await signOut(auth); }catch(_){}
-      location.reload();
-    });
-
     /***** Stocks *****/
     function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,"_"); }
 
@@ -493,14 +482,13 @@
       const col = collection(db,"artifacts",APP_ID,"public","data","stocks");
       const snap = await getDocs(col);
 
-      const newStocks = {}; // Use a temporary object for building deduplicated stocks
-      const existingFirebaseSlugs = new Set(); // Track slugs already in Firebase
+      const newStocks = {};
+      const existingFirebaseSlugs = new Set();
 
-      // Process existing Firebase documents first
       snap.forEach(d => {
         const data = d.data();
-        const firebaseDocId = d.id; // Keep the original Firebase document ID
-        const stockName = data.name || firebaseDocId; // Fallback to doc ID if name is missing
+        const firebaseDocId = d.id;
+        const stockName = data.name || firebaseDocId;
         const stockSlug = slug(stockName);
 
         const prev = newStocks[stockSlug] || {};
@@ -508,7 +496,7 @@
 
         newStocks[stockSlug] = {
           firebaseDocId: firebaseDocId,
-          id: stockSlug, // This is the client-side unique identifier (the slug)
+          id: stockSlug,
           name: stockName,
           baseline: Number.isFinite(base) ? base : prev.baseline,
           price: Number.isFinite(prev.price) ? prev.price : (Number.isFinite(base) ? base : (prev.defaultBaseline || +(300 + Math.random()*900).toFixed(2))),
@@ -518,13 +506,12 @@
         existingFirebaseSlugs.add(stockSlug);
       });
 
-      // Add SEED_STOCKS that are not yet represented in our newStocks object (and thus Firebase)
       for(const name of SEED_STOCKS){
         const stockSlug = slug(name);
-        if (!newStocks[stockSlug]){ // If this stock name isn't already processed from Firebase
+        if (!newStocks[stockSlug]){
           const base = +(300+Math.random()*900).toFixed(2);
           newStocks[stockSlug] = {
-            firebaseDocId: stockSlug, // For new seeds, firebaseDocId will be the slug
+            firebaseDocId: stockSlug,
             id: stockSlug,
             name,
             baseline: base,
@@ -540,25 +527,23 @@
           }catch(_){ console.error("Error setting new stock in Firebase:", name); }
         }
       }
-
-      // Finally, update the global stocks object
       stocks = newStocks;
     }
 
     function attachRealtime(){
       const col = collection(db,"artifacts",APP_ID,"public","data","stocks");
       onSnapshot(col, (snap)=>{
-        const updatedStocks = {}; // Build a new object to ensure clean state
-        const seenSlugs = new Set(); // Track slugs seen in this snapshot
+        const updatedStocks = {};
+        const seenSlugs = new Set();
 
         snap.forEach(d => {
           const data = d.data()||{};
-          const firebaseDocId = d.id; // Original Firebase doc ID
+          const firebaseDocId = d.id;
           const stockName = data.name || firebaseDocId;
           const stockSlug = slug(stockName);
           seenSlugs.add(stockSlug);
 
-          const prev = stocks[stockSlug] || {}; // Get previous state by slug
+          const prev = stocks[stockSlug] || {};
           const base = Number(data.baseline);
           const baselineChanged = Number.isFinite(prev.baseline) && Number.isFinite(base) && base !== prev.baseline;
           const priceInit = baselineChanged
@@ -566,8 +551,8 @@
               : (Number.isFinite(prev.price) ? prev.price : (Number.isFinite(base) ? base : prev.defaultBaseline));
 
           updatedStocks[stockSlug] = {
-            firebaseDocId: firebaseDocId, // Store the Firebase doc ID
-            id: stockSlug, // Client-side unique ID
+            firebaseDocId: firebaseDocId,
+            id: stockSlug,
             name: stockName,
             baseline: Number.isFinite(base) ? base : prev.baseline,
             price: clamp(priceInit),
@@ -576,19 +561,16 @@
           };
         });
 
-        // Add back any existing stocks that were not in the current snapshot but we still want to keep
         Object.values(stocks).forEach(s => {
           if (!seenSlugs.has(s.id)) {
             updatedStocks[s.id] = s;
           }
         });
-
-        // Update the global stocks object
         stocks = updatedStocks;
 
         renderStockTiles();
         if (selectedId && stocks[selectedId]) detailName.textContent = stocks[selectedId].name;
-        else if (selectedId && !stocks[selectedId]) { // if selected stock was removed
+        else if (selectedId && !stocks[selectedId]) {
           selectedId = null;
           detailName.textContent = "Select a stock";
           detailPrice.textContent = "";
@@ -600,10 +582,7 @@
     }
 
     function renderStockTiles(){
-      // Clear current tiles
       stockList.innerHTML = "";
-
-      // Sort stocks by name and render
       Object.values(stocks).sort((a,b)=>a.name.localeCompare(b.name)).forEach(s => {
         const price = currentPriceFor(s);
         const tile = document.createElement("button");
@@ -623,10 +602,11 @@
     }
 
     function selectStock(id){
-      selectedId = id; // selectedId is now the slug
+      selectedId = id;
       const s = stocks[id];
       detailName.textContent = s.name;
       series = [];
+      candleSeries = [];
       lastSampleTime = 0;
       tradeMsg.textContent = "";
       adminSelected.textContent = s.name || "None";
@@ -636,7 +616,6 @@
       drawChart();
     }
 
-    // Admin ±10% / ±50%
     raiseBtn?.addEventListener("click", ()=> adjustSelected( 0.10));
     lowerBtn?.addEventListener("click", ()=> adjustSelected(-0.10));
     raise50Btn?.addEventListener("click", ()=> adjustSelected( 0.50));
@@ -645,21 +624,15 @@
     async function adjustSelected(delta){
       if(!selectedId || myRole!=="admin") return;
       const s = stocks[selectedId];
-      // Use s.firebaseDocId to reference the actual Firebase document
       const ref = doc(db,"artifacts",APP_ID,"public","data","stocks", s.firebaseDocId);
       const base = Number.isFinite(s.baseline) ? s.baseline : (s.defaultBaseline||500);
       const newBase = +(base * (1+delta)).toFixed(2);
-
-      // Optimistic UI
       s.baseline = newBase; s.price = newBase;
       stocks[selectedId] = s;
       adminSelectedPrice.textContent = `• ₹ ${fmt(newBase)}${s.frozen?' • FROZEN':''}`;
       detailPrice.textContent = `₹ ${fmt(newBase)}${s.frozen?' • FROZEN':''}`;
       renderStockTiles();
-
-      // Write baseline
       try{ await updateDoc(ref, { baseline:newBase }); }
-      // If doc doesn't exist, create it using its firebaseDocId (which might be the slug if it was a seed)
       catch(err){ try{ await setDoc(ref, { name: s.name || selectedId, baseline: newBase }, { merge: true }); }catch(_){ } }
     }
 
@@ -690,7 +663,6 @@
       }catch(e){ freezeMsg.textContent = "Could not unfreeze stock."; }
     });
 
-    // NEW: Freeze All Stocks
     freezeAllBtn?.addEventListener("click", async ()=>{
       if(myRole!=="admin") return;
       allFreezeMsg.textContent = "Freezing all stocks...";
@@ -698,22 +670,14 @@
       try {
         const sSnap = await getDocs(stocksCol);
         for(const d of sSnap.docs){
-          const stockDocId = d.id;
-          const stockName = d.data().name || stockDocId;
-          const stockSlug = slug(stockName);
           await updateDoc(d.ref, { frozen: true });
-          if (stocks[stockSlug]) { stocks[stockSlug].frozen = true; }
         }
         allFreezeMsg.textContent = "All stocks frozen.";
-        renderStockTiles();
-        updateTradeControls();
       } catch(e) {
         allFreezeMsg.textContent = "Could not freeze all stocks.";
-        console.error("Error freezing all stocks:", e);
       }
     });
 
-    // NEW: Unfreeze All Stocks
     unfreezeAllBtn?.addEventListener("click", async ()=>{
       if(myRole!=="admin") return;
       allFreezeMsg.textContent = "Unfreezing all stocks...";
@@ -721,37 +685,274 @@
       try {
         const sSnap = await getDocs(stocksCol);
         for(const d of sSnap.docs){
-          const stockDocId = d.id;
-          const stockName = d.data().name || stockDocId;
-          const stockSlug = slug(stockName);
-          await updateDoc(d.ref, { frozen: false });
-          if (stocks[stockSlug]) { stocks[stockSlug].frozen = false; }
+         await updateDoc(d.ref, { frozen: false });
         }
         allFreezeMsg.textContent = "All stocks unfrozen.";
-        renderStockTiles();
-        updateTradeControls();
       } catch(e) {
         allFreezeMsg.textContent = "Could not unfreeze all stocks.";
-        console.error("Error unfreezing all stocks:", e);
       }
     });
     
-    /***** Graphing *****/
-    function drawChart(){
-      const s = selectedId ? stocks[selectedId] : null;
-      if (!s) return;
+    /***** Trader Logic *****/
+    function attachTraderDoc(){
+        if(myRole !== "trader") return;
+        const ref = doc(db,"artifacts",APP_ID,"public","data","traders",me.uid);
+        onSnapshot(ref, (snap) => {
+            myTrader = snap.exists() ? snap.data() : { funds: 0, portfolio: {}, history: [] };
+            updateMetrics();
+            renderTraderPortfolio();
+        });
+    }
+    
+    buyBtn?.addEventListener("click", async ()=>handleTrade("buy"));
+    sellBtn?.addEventListener("click", async ()=>handleTrade("sell"));
+    
+    async function handleTrade(type){
+        if(!selectedId || myRole !== "trader") return;
+        const qty = parseInt(qtyEl.value, 10);
+        if(!Number.isInteger(qty) || qty < 1){
+            tradeMsg.textContent = "Invalid quantity.";
+            return;
+        }
 
-      if (chartType === "line") {
-        drawLineChart();
-      } else if (chartType === "candle") {
-        drawCandleChart();
-      }
+        tradeMsg.textContent = "";
+        const ref = doc(db,"artifacts",APP_ID,"public","data","traders",me.uid);
+        
+        try{
+            await runTransaction(db, async (transaction) => {
+                const traderDoc = await transaction.get(ref);
+                const trader = traderDoc.exists() ? traderDoc.data() : { funds: 0, portfolio: {}, history: [] };
+                const s = stocks[selectedId];
+                const price = currentPriceFor(s);
+                const cost = qty * price;
+
+                if(type === "buy"){
+                    if(trader.funds < cost){ throw new Error("Insufficient funds."); }
+                    trader.funds -= cost;
+                    trader.portfolio[selectedId] = (trader.portfolio[selectedId] || 0) + qty;
+                } else { // sell
+                    if(!trader.portfolio[selectedId] || trader.portfolio[selectedId] < qty){
+                        throw new Error("Not enough shares to sell.");
+                    }
+                    trader.funds += cost;
+                    trader.portfolio[selectedId] -= qty;
+                    if(trader.portfolio[selectedId] === 0) delete trader.portfolio[selectedId];
+                }
+
+                trader.history.unshift({
+                    time: Date.now(),
+                    type,
+                    stock: selectedId,
+                    qty,
+                    price,
+                    value: cost
+                });
+                if(trader.history.length > 100) trader.history.pop();
+                
+                transaction.set(ref, trader, { merge: true });
+            });
+            tradeMsg.textContent = `Successfully ${type === "buy" ? "bought" : "sold"} ${qty} shares.`;
+
+        } catch(e) {
+            tradeMsg.textContent = e.message;
+        }
+    }
+    
+    setAutoBtn?.addEventListener("click", async () => {
+        if(!selectedId || myRole !== "trader") return;
+        const price = parseFloat(autoPrice.value);
+        const qty = parseInt(autoQty.value, 10);
+        if(!Number.isFinite(price) || price <= 0 || !Number.isInteger(qty) || qty < 1){
+            autoMsg.textContent = "Invalid price or quantity.";
+            return;
+        }
+        autoMsg.textContent = "";
+        const ref = doc(db,"artifacts",APP_ID,"public","data","traders",me.uid);
+        try{
+            await updateDoc(ref, {
+                [`autosell.${selectedId}`]: { price, qty }
+            });
+            autoMsg.textContent = "Auto-sell rule set.";
+        } catch(e) {
+            autoMsg.textContent = "Could not set rule.";
+        }
+    });
+
+    clearAutoBtn?.addEventListener("click", async () => {
+        if(!selectedId || myRole !== "trader") return;
+        autoMsg.textContent = "";
+        const ref = doc(db,"artifacts",APP_ID,"public","data","traders",me.uid);
+        try{
+            await updateDoc(ref, {
+                [`autosell.${selectedId}`]: null
+            });
+            autoMsg.textContent = "Auto-sell rule cleared.";
+        } catch(e){
+             autoMsg.textContent = "Could not clear rule.";
+        }
+    });
+
+
+    /***** Loops & Timers *****/
+    function startTickTimer(){
+      setInterval(() => {
+        const now = Date.now();
+        if (now - lastProcessedTick > TICK_MS) {
+            processPriceTick();
+            lastProcessedTick = now;
+        }
+         if (now - lastAutosTick > TICK_MS * 2) { // Less frequent
+            processAutoSells();
+            lastAutosTick = now;
+        }
+      }, TICK_MS / 2);
+    }
+    
+    function processPriceTick(){
+        Object.values(stocks).forEach(jumpOnce);
+    }
+
+    async function processAutoSells(){
+        if(myRole !== 'trader' || !myTrader?.autosell) return;
+        
+        for(const stockId in myTrader.autosell){
+            const rule = myTrader.autosell[stockId];
+            if(!rule) continue;
+
+            const s = stocks[stockId];
+            if(!s || s.frozen) continue;
+            
+            const price = currentPriceFor(s);
+            if(price >= rule.price){
+                // Trigger sell
+                const qtyToSell = Math.min(rule.qty, myTrader.portfolio[stockId] || 0);
+                if(qtyToSell < 1) continue;
+
+                const ref = doc(db,"artifacts",APP_ID,"public","data","traders",me.uid);
+                try {
+                     await runTransaction(db, async (transaction) => {
+                        const traderDoc = await transaction.get(ref);
+                        const t = traderDoc.data(); // fresh data
+                        if(!t.portfolio[stockId] || t.portfolio[stockId] < qtyToSell) return;
+
+                        const cost = qtyToSell * price;
+                        t.funds += cost;
+                        t.portfolio[stockId] -= qtyToSell;
+                        if(t.portfolio[stockId] === 0) delete t.portfolio[stockId];
+                        
+                        t.history.unshift({ time: Date.now(), type: 'auto-sell', stock: stockId, qty: qtyToSell, price, value: cost });
+                        delete t.autosell[stockId]; // remove rule after execution
+                        transaction.set(ref, t);
+                    });
+                } catch(e){ console.error("Auto-sell failed:", e); }
+            }
+        }
+    }
+
+    function startAnimationLoop(){
+      requestAnimationFrame(function animate(){
+        if(selectedId){
+          const s = stocks[selectedId];
+          const price = currentPriceFor(s);
+          detailPrice.textContent = `₹ ${fmt(price)}${s.frozen?' • FROZEN':''}`;
+          adminSelectedPrice.textContent = `• ₹ ${fmt(price)}${s.frozen?' • FROZEN':''}`;
+          
+          if(Date.now() - lastSampleTime > 1000){
+            series.push(price);
+            if(series.length > 50) series.shift();
+            
+            // For candle chart
+            if (candleSeries.length === 0 || Date.now() - candleSeries[candleSeries.length-1].time > 5000) {
+                candleSeries.push({ open: price, high: price, low: price, close: price, time: Date.now() });
+            } else {
+                let lastCandle = candleSeries[candleSeries.length - 1];
+                lastCandle.high = Math.max(lastCandle.high, price);
+                lastCandle.low = Math.min(lastCandle.low, price);
+                lastCandle.close = price;
+            }
+            if(candleSeries.length > 30) candleSeries.shift();
+
+            lastSampleTime = Date.now();
+            drawChart();
+          }
+        }
+        Object.values(stocks).forEach(s=>{
+          const el = $(`p-${s.id}`);
+          if(el) el.textContent = fmt(currentPriceFor(s));
+        });
+        updateMetrics();
+        requestAnimationFrame(animate);
+      });
+    }
+
+    function updateMetrics(){
+        if(myRole !== "trader" || !myTrader) return;
+
+        workingCapEl.textContent = fmt(myTrader.funds);
+
+        let invested = 0;
+        let initialInvested = myTrader.initialFunds || 100000;
+        for(const stockId in myTrader.portfolio){
+            const qty = myTrader.portfolio[stockId];
+            invested += qty * currentPriceFor(stocks[stockId]);
+        }
+        investedCapEl.textContent = fmt(invested);
+
+        const totalEquity = myTrader.funds + invested;
+        const pl = ((totalEquity - initialInvested) / initialInvested) * 100;
+        profitLossEl.textContent = `${fmt(pl)}%`;
+        profitLossEl.style.color = pl >= 0 ? 'var(--good)' : 'var(--bad)';
+    }
+    
+    function renderTraderPortfolio(){
+        if(myRole !== "trader" || !myTrader) return;
+        traderPfTable.innerHTML = "";
+        let totalValue = 0;
+        Object.keys(myTrader.portfolio).sort().forEach(stockId => {
+            const qty = myTrader.portfolio[stockId];
+            if(qty < 1) return;
+            const s = stocks[stockId];
+            if(!s) return;
+            const price = currentPriceFor(s);
+            const value = qty * price;
+            totalValue += value;
+            const row = document.createElement("tr");
+            row.innerHTML = `<td>${s.name}</td><td>${qty}</td><td>${fmt(price)}</td><td>${fmt(value)}</td>`;
+            traderPfTable.appendChild(row);
+        });
+        traderPfSummary.textContent = `Total Value: ₹ ${fmt(totalValue)}`;
+    }
+
+
+    /***** Graphing *****/
+    const lineGraphBtn = $("lineGraphBtn");
+    const candleGraphBtn = $("candleGraphBtn");
+
+    lineGraphBtn.addEventListener("click", () => {
+      chartType = "line";
+      lineGraphBtn.classList.add("btn-primary");
+      lineGraphBtn.classList.remove("btn-ghost");
+      candleGraphBtn.classList.add("btn-ghost");
+      candleGraphBtn.classList.remove("btn-primary");
+      drawChart();
+    });
+
+    candleGraphBtn.addEventListener("click", () => {
+      chartType = "candle";
+      candleGraphBtn.classList.add("btn-primary");
+      candleGraphBtn.classList.remove("btn-ghost");
+      lineGraphBtn.classList.add("btn-ghost");
+      lineGraphBtn.classList.remove("btn-primary");
+      drawChart();
+    });
+
+    function drawChart(){
+      if(myRole !== 'trader' || !selectedId) return;
+      if (chartType === "line") drawLineChart();
+      else if (chartType === "candle") drawCandleChart();
     }
 
     function drawLineChart(){
-      const s = selectedId ? stocks[selectedId] : null;
-      if (!s) return;
-
       const ctx = chartEl.getContext("2d");
       const { width, height } = chartEl;
       ctx.clearRect(0,0,width,height);
@@ -760,74 +961,207 @@
 
       const min = Math.min(...series);
       const max = Math.max(...series);
-      const range = max - min;
+      const range = max === min ? 1 : max - min;
       const xStep = width / (series.length - 1);
 
       ctx.beginPath();
-      ctx.strokeStyle = "#4cafef";
+      ctx.strokeStyle = "var(--accent)";
       ctx.lineWidth = 2;
+      ctx.lineJoin = "round";
 
       series.forEach((price, i) => {
-        const y = height - ((price - min) / range) * height;
-        if (i === 0) {
-          ctx.moveTo(i * xStep, y);
-        } else {
-          ctx.lineTo(i * xStep, y);
-        }
+        const y = height - ((price - min) / range * height * 0.9 + height * 0.05);
+        if (i === 0) ctx.moveTo(i * xStep, y);
+        else ctx.lineTo(i * xStep, y);
       });
       ctx.stroke();
     }
 
     function drawCandleChart() {
-      const s = selectedId ? stocks[selectedId] : null;
-      if (!s) return;
-
       const ctx = chartEl.getContext("2d");
       const { width, height } = chartEl;
       ctx.clearRect(0,0,width,height);
 
-      if (series.length < 2) return;
+      if (candleSeries.length < 1) return;
 
-      const candleWidth = width / series.length;
-      const min = Math.min(...series);
-      const max = Math.max(...series);
-      const range = max - min;
+      const allPrices = candleSeries.flatMap(c => [c.high, c.low]);
+      const min = Math.min(...allPrices);
+      const max = Math.max(...allPrices);
+      const range = max === min ? 1 : max - min;
+      
+      const candleWidth = Math.max(3, width / candleSeries.length * 0.7);
+      const xStep = width / candleSeries.length;
 
-      series.forEach((price, i) => {
-        const open = i > 0 ? series[i-1] : price;
-        const close = price;
-        const high = Math.max(open, close);
-        const low = Math.min(open, close);
+      candleSeries.forEach((c, i) => {
+        const y = (price) => height - ((price - min) / range * height * 0.9 + height * 0.05);
 
-        const yOpen = height - ((open - min) / range) * height;
-        const yClose = height - ((close - min) / range) * height;
-        const yHigh = height - ((high - min) / range) * height;
-        const yLow = height - ((low - min) / range) * height;
+        const yOpen = y(c.open);
+        const yClose = y(c.close);
+        const yHigh = y(c.high);
+        const yLow = y(c.low);
         
-        ctx.strokeStyle = open > close ? "#ff6b6b" : "#3ddc97";
-        ctx.fillStyle = open > close ? "#ff6b6b" : "#3ddc97";
+        const color = c.close >= c.open ? 'var(--good)' : 'var(--bad)';
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
 
-        // Draw wick
+        // Wick
         ctx.beginPath();
-        ctx.moveTo(i * candleWidth + candleWidth/2, yHigh);
-        ctx.lineTo(i * candleWidth + candleWidth/2, yLow);
+        ctx.moveTo(i * xStep + xStep/2, yHigh);
+        ctx.lineTo(i * xStep + xStep/2, yLow);
+        ctx.lineWidth = 1;
         ctx.stroke();
 
-        // Draw candle body
-        ctx.fillRect(i * candleWidth, Math.min(yOpen, yClose), candleWidth, Math.abs(yOpen - yClose));
+        // Body
+        ctx.fillRect(i * xStep + (xStep-candleWidth)/2, Math.min(yOpen, yClose), candleWidth, Math.abs(yOpen - yClose) || 1);
       });
     }
 
-    $("lineGraphBtn").addEventListener("click", () => {
-      chartType = "line";
-      drawChart();
+    /***** Admin *****/
+    applyFundsBtn?.addEventListener("click", async ()=>{
+        if(myRole !== "admin") return;
+        const funds = parseFloat(allFunds.value);
+        if(!Number.isFinite(funds) || funds < 0){
+            fundsMsg.textContent = "Invalid amount.";
+            return;
+        }
+        fundsMsg.textContent = "Applying...";
+        const tradersCol = collection(db, "artifacts", APP_ID, "public", "data", "traders");
+        try {
+            const snap = await getDocs(tradersCol);
+            for(const d of snap.docs){
+                await updateDoc(d.ref, { funds: funds, initialFunds: funds });
+            }
+            fundsMsg.textContent = `Set starting funds to ${fmt(funds)} for all traders.`;
+        } catch(e) {
+            fundsMsg.textContent = "Could not apply funds.";
+        }
+    });
+    
+    resetBtn?.addEventListener("click", async ()=>{
+        if(myRole !== "admin" || !confirm("HARD RESET: Are you sure you want to reset all stocks and trader data? This cannot be undone.")) return;
+        
+        // Reset stocks
+        const stocksCol = collection(db, "artifacts", APP_ID, "public", "data", "stocks");
+        const sSnap = await getDocs(stocksCol);
+        for(const d of sSnap.docs) await updateDoc(d.ref, { baseline: null, frozen: false });
+        await bootstrapStocks();
+        
+        // Reset traders
+        const tradersCol = collection(db, "artifacts", APP_ID, "public", "data", "traders");
+        const tSnap = await getDocs(tradersCol);
+        for(const d of tSnap.docs) await setDoc(d.ref, { funds: 100000, initialFunds: 100000, portfolio: {}, history: [], autosell: {} });
+        
+        alert("System has been hard reset.");
+    });
+    
+    async function loadRankingsLoop(){
+        if(myRole !== "admin") return;
+        
+        async function updateRanks(){
+            const tradersCol = collection(db,"artifacts",APP_ID,"public","data","traders");
+            const rolesCol = collection(db,"artifacts",APP_ID,"public","data","roles");
+            
+            const [tradersSnap, rolesSnap] = await Promise.all([getDocs(tradersCol), getDocs(rolesCol)]);
+            
+            const rolesByUid = {};
+            rolesSnap.forEach(d => { rolesByUid[d.id] = d.data(); });
+            
+            const ranks = [];
+            tradersSnap.forEach(d => {
+                const trader = d.data();
+                const uid = d.id;
+                let invested = 0;
+                for(const stockId in trader.portfolio){
+                    invested += (trader.portfolio[stockId] || 0) * currentPriceFor(stocks[stockId]);
+                }
+                const totalEquity = (trader.funds || 0) + invested;
+                const initial = trader.initialFunds || 100000;
+                const pl = ((totalEquity - initial) / initial) * 100;
+                
+                ranks.push({
+                    name: rolesByUid[uid]?.email.split('@')[0] || uid.slice(0,6),
+                    equity: totalEquity,
+                    pl
+                });
+            });
+
+            ranks.sort((a,b) => b.equity - a.equity);
+            
+            rankTable.innerHTML = "";
+            ranks.forEach((r, i) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `<td>${i+1}</td><td>${r.name}</td><td>${fmt(r.equity)}</td><td style="color:${r.pl >= 0 ? 'var(--good)':'var(--bad)'}">${fmt(r.pl)}%</td>`;
+                rankTable.appendChild(row);
+            });
+        }
+        
+        await updateRanks();
+        setInterval(updateRanks, 5000);
+    }
+    
+    async function fillTraderDropdown(){
+        const rolesCol = collection(db,"artifacts",APP_ID,"public","data","roles");
+        const q = query(rolesCol, where("role", "==", "trader"));
+        const snap = await getDocs(q);
+        traderSelect.innerHTML = `<option value="">Select a trader to view portfolio</option>`;
+        snap.forEach(d => {
+            const opt = document.createElement("option");
+            opt.value = d.id;
+            opt.textContent = d.data().email;
+            traderSelect.appendChild(opt);
+        });
+    }
+
+    traderSelect?.addEventListener("change", async (e) => {
+        const uid = e.target.value;
+        if(!uid){
+            portfolioWrap.style.display = "none";
+            return;
+        }
+        
+        const ref = doc(db,"artifacts",APP_ID,"public","data","traders",uid);
+        const d = await getDoc(ref);
+        if(!d.exists()){
+            portfolioWrap.style.display = "none";
+            return;
+        }
+        
+        const trader = d.data();
+        const email = traderSelect.options[traderSelect.selectedIndex].text;
+        pfTitle.textContent = `Portfolio for ${email}`;
+        
+        pfTable.innerHTML = "";
+        let totalValue = 0;
+        for(const stockId in trader.portfolio){
+            const qty = trader.portfolio[stockId];
+            if(qty < 1) continue;
+            const s = stocks[stockId];
+            if(!s) continue;
+            const price = currentPriceFor(s);
+            const value = qty * price;
+            totalValue += value;
+            const row = document.createElement("tr");
+            row.innerHTML = `<td>${s.name}</td><td>${qty}</td><td>${fmt(price)}</td><td>${fmt(value)}</td>`;
+            pfTable.appendChild(row);
+        }
+        pfSummary.innerHTML = `<strong>Funds:</strong> ${fmt(trader.funds)} &nbsp; • &nbsp; <strong>Invested:</strong> ${fmt(totalValue)} &nbsp; • &nbsp; <strong>Total:</strong> ${fmt(trader.funds + totalValue)}`;
+        
+        historyTable.innerHTML = "";
+        (trader.history || []).forEach(h => {
+           const row = document.createElement("tr");
+           row.innerHTML = `<td>${new Date(h.time).toLocaleTimeString()}</td><td>${h.type}</td><td>${stocks[h.stock]?.name||h.stock}</td><td>${h.qty}</td><td>${fmt(h.price)}</td><td>${fmt(h.value)}</td>`;
+           historyTable.appendChild(row);
+        });
+        
+        portfolioWrap.style.display = "block";
     });
 
-    $("candleGraphBtn").addEventListener("click", () => {
-      chartType = "candle";
-      drawChart();
-    });
+    /***** Utils *****/
+    function fmt(n){
+      return (n || 0).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+    }
 
   </script>
 </body>
 </html>
+
